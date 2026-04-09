@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>빛고을시민문화관 공연장 일정</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Noto Sans KR',sans-serif;background:#f5f5f5;color:#1a1a1a;min-height:100vh;}
+.wrap{max-width:540px;margin:0 auto;padding:16px;}
+.app-header{text-align:center;padding:16px 0 12px;margin-bottom:12px;border-bottom:1px solid #e8e8e8;}
+.app-header h1{font-size:17px;font-weight:600;color:#1a1a1a;letter-spacing:-0.3px;}
+.app-header p{font-size:11px;color:#888;margin-top:3px;}
+.card{background:#fff;border-radius:14px;border:1px solid #e8e8e8;padding:14px;margin-bottom:12px;}
+.hint{font-size:11px;color:#888;line-height:1.7;margin-bottom:8px;}
+.paste-area{width:100%;min-height:75px;border:1px solid #ddd;border-radius:8px;padding:10px;font-size:11px;font-family:monospace;background:#fafafa;color:#1a1a1a;resize:vertical;outline:none;}
+.paste-area:focus{border-color:#185FA5;background:#fff;}
+.parse-btn{margin-top:8px;width:100%;padding:10px;border-radius:10px;border:none;background:#185FA5;color:#fff;font-size:13px;font-weight:600;cursor:pointer;letter-spacing:-0.2px;}
+.parse-btn:active{opacity:0.85;}
+.divider{border:none;border-top:1px solid #eee;margin:4px 0 12px;}
+.cal-title{font-size:16px;font-weight:600;color:#1a1a1a;margin-bottom:10px;letter-spacing:-0.3px;}
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:12px;}
+.stat{background:#f7f7f7;border-radius:10px;padding:8px 4px;text-align:center;}
+.stat-num{font-size:20px;font-weight:700;color:#1a1a1a;}
+.stat-lbl{font-size:9px;color:#888;margin-top:2px;line-height:1.3;}
+.filter-bar{display:flex;gap:6px;align-items:center;margin-bottom:8px;}
+.filter-label{font-size:11px;color:#888;white-space:nowrap;flex-shrink:0;}
+.filter-input{flex:1;border:1px solid #ddd;border-radius:8px;padding:7px 10px;font-size:12px;background:#fafafa;color:#1a1a1a;outline:none;}
+.filter-input:focus{border-color:#185FA5;background:#fff;}
+.filter-clear{padding:7px 10px;border-radius:8px;border:1px solid #ddd;background:#fafafa;color:#888;font-size:11px;cursor:pointer;white-space:nowrap;}
+.filter-result{font-size:11px;color:#185FA5;background:#E6F1FB;border-radius:8px;padding:6px 10px;margin-bottom:8px;display:none;}
+.legend{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;}
+.leg{display:flex;align-items:center;gap:3px;font-size:10px;color:#888;}
+.ldot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.day-row{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;margin-bottom:3px;}
+.dl{text-align:center;font-size:10px;color:#888;font-weight:600;padding:3px 0;}
+.dl.sun{color:#D85A30;}.dl.sat{color:#185FA5;}
+.cell{border-radius:8px;border:1px solid #eee;background:#fff;cursor:pointer;overflow:hidden;min-height:60px;transition:border-color 0.15s,opacity 0.2s,transform 0.1s;}
+.cell:active{transform:scale(0.97);}
+.cell.empty{background:transparent;border-color:transparent;cursor:default;min-height:0;}
+.cell.dimmed{opacity:0.15;pointer-events:none;}
+.cell.highlight{border:2px solid #185FA5;background:#f0f7ff;}
+.cell-top{padding:4px 5px 3px;}
+.dn{font-size:11px;font-weight:600;color:#1a1a1a;}
+.dn.sun{color:#D85A30;}.dn.sat{color:#185FA5;}.dn.red{color:#D85A30!important;}
+.badge{font-size:8px;padding:2px 4px;border-radius:4px;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.4;display:block;}
+.bs{background:#EAF3DE;color:#27500A;}.bc{background:#E6F1FB;color:#0C447C;}
+.bh{background:#FAECE7;color:#712B13;}.bo{background:#EEEDFE;color:#3C3489;}
+.boff{background:#F1EFE8;color:#5F5E5A;}.bhol{background:#FEF3CD;color:#7d6008;}
+.sdot{width:5px;height:5px;border-radius:50%;background:#7F77DD;display:inline-block;margin-left:3px;vertical-align:middle;}
+.panel{margin-top:12px;background:#fff;border:1px solid #e8e8e8;border-radius:14px;padding:16px;display:none;}
+.panel.show{display:block;}
+.panel-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+.panel-title{font-size:15px;font-weight:600;color:#1a1a1a;}
+.close-btn{font-size:12px;color:#aaa;cursor:pointer;border:none;background:none;padding:4px 8px;border-radius:6px;}
+.close-btn:active{background:#f0f0f0;}
+.info-tags{margin-bottom:6px;}
+.info-tag{font-size:11px;padding:3px 10px;border-radius:20px;display:inline-block;margin-right:4px;margin-bottom:4px;}
+.pname{font-size:13px;font-weight:600;color:#1a1a1a;margin:8px 0 4px;line-height:1.4;}
+.detail-text{font-size:11px;color:#888;margin:3px 0;line-height:1.6;}
+.staff-section{margin-top:12px;border-top:1px solid #eee;padding-top:12px;}
+.staff-lbl{font-size:12px;font-weight:600;color:#1a1a1a;margin-bottom:8px;}
+.staff-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.sitem{display:flex;flex-direction:column;gap:3px;}
+.srole{font-size:10px;color:#888;font-weight:500;}
+.sinput{width:100%;border:1px solid #ddd;border-radius:8px;padding:7px 10px;font-size:12px;background:#fafafa;color:#1a1a1a;outline:none;}
+.sinput:focus{border-color:#185FA5;background:#fff;}
+.save-btn{margin-top:10px;width:100%;padding:10px;border-radius:10px;border:none;background:#185FA5;color:#fff;font-size:13px;font-weight:600;cursor:pointer;}
+.save-btn:active{opacity:0.85;}
+.empty-state{text-align:center;padding:40px 20px;color:#bbb;font-size:13px;display:none;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="app-header">
+    <h1>빛고을시민문화관</h1>
+    <p>공연장 일정 대시보드</p>
+  </div>
+
+  <div class="card">
+    <div class="hint">엑셀 일정표 전체 선택(Ctrl+A) → 복사(Ctrl+C) → 아래에 붙여넣기(Ctrl+V) 후 버튼 클릭</div>
+    <textarea class="paste-area" id="pasteBox" placeholder="엑셀 내용을 여기에 붙여넣기 하세요"></textarea>
+    <button class="parse-btn" onclick="parsePaste()">캘린더 생성</button>
+  </div>
+
+  <div id="calSection" style="display:none;">
+    <div class="card">
+      <div class="cal-title" id="calTitle"></div>
+      <div class="stats-row" id="statsRow"></div>
+      <hr class="divider">
+      <div class="filter-bar">
+        <span class="filter-label">담당자 검색</span>
+        <input class="filter-input" id="filterInput" placeholder="이름 또는 단체명..." oninput="applyFilter()">
+        <button class="filter-clear" onclick="clearFilter()">전체</button>
+      </div>
+      <div class="filter-result" id="filterResult"></div>
+      <div class="legend">
+        <div class="leg"><div class="ldot" style="background:#639922;"></div>자체(무료)</div>
+        <div class="leg"><div class="ldot" style="background:#185FA5;"></div>시 대관(무료)</div>
+        <div class="leg"><div class="ldot" style="background:#D85A30;"></div>후원 대관(50%)</div>
+        <div class="leg"><div class="ldot" style="background:#534AB7;"></div>외부 대관</div>
+        <div class="leg"><div class="ldot" style="background:#BA7517;"></div>공휴일</div>
+        <div class="leg"><div class="ldot" style="background:#7F77DD;"></div>근무자 입력됨</div>
+      </div>
+      <div class="day-row">
+        <div class="dl sun">일</div><div class="dl">월</div><div class="dl">화</div>
+        <div class="dl">수</div><div class="dl">목</div><div class="dl">금</div><div class="dl sat">토</div>
+      </div>
+      <div id="calGrid"></div>
+    </div>
+
+    <div class="panel" id="detailPanel">
+      <div class="panel-header">
+        <div class="panel-title" id="panelTitle"></div>
+        <button class="close-btn" onclick="closePanel()">닫기 ×</button>
+      </div>
+      <div class="info-tags" id="panelBadges"></div>
+      <div class="pname" id="panelName" style="display:none;"></div>
+      <div class="detail-text" id="panelTime"></div>
+      <div class="detail-text" id="panelNote"></div>
+      <div class="staff-section">
+        <div class="staff-lbl">근무자 입력</div>
+        <div class="staff-grid">
+          <div class="sitem"><div class="srole">음향 담당</div><input class="sinput" id="s-audio" placeholder="이름 입력"></div>
+          <div class="sitem"><div class="srole">조명 담당</div><input class="sinput" id="s-light" placeholder="이름 입력"></div>
+          <div class="sitem"><div class="srole">무대 감독</div><input class="sinput" id="s-stage" placeholder="이름 입력"></div>
+          <div class="sitem"><div class="srole">행정 담당</div><input class="sinput" id="s-admin" placeholder="이름 입력"></div>
+        </div>
+        <div class="sitem" style="margin-top:8px;"><div class="srole">메모</div><input class="sinput" id="s-memo" placeholder="특이사항 입력"></div>
+        <button class="save-btn" id="saveBtn" onclick="saveStaff()">저장</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+let calYear=2026,calMonth=6,calDays={},staffData={},selectedDay=null,filterKeyword='';
+const DAYS_KR=['일','월','화','수','목','금','토'];
+const TYPE_MAP={s:'자체(무료)',c:'시 대관(무료)',h:'후원 대관(50%)',o:'외부 대관',off:'정기휴관일',hol:'공휴일'};
+const TYPE_DOT={s:'#639922',c:'#185FA5',h:'#D85A30',o:'#534AB7',off:'#888780',hol:'#BA7517'};
+const TYPE_CLS={s:'bs',c:'bc',h:'bh',o:'bo',off:'boff',hol:'bhol'};
+
+function parseTSV(raw){
+  const rows=[];let row=[],cell='',inQ=false;
+  for(let i=0;i<raw.length;i++){
+    const ch=raw[i],nx=raw[i+1];
+    if(ch==='"'&&!inQ)inQ=true;
+    else if(ch==='"'&&inQ&&nx==='"'){cell+='"';i++;}
+    else if(ch==='"'&&inQ)inQ=false;
+    else if(ch==='\t'&&!inQ){row.push(cell.trim());cell='';}
+    else if(ch==='\n'&&!inQ){row.push(cell.trim());rows.push(row);row=[];cell='';}
+    else cell+=ch;
+  }
+  if(cell||row.length){row.push(cell.trim());rows.push(row);}
+  return rows;
+}
+
+function extractDay(c){
+  if(!c)return null;
+  const m1=c.match(/^(\d{1,2})\s*[.\-。]\s*\S/);
+  if(m1){const d=+m1[1];return(d>=1&&d<=31)?d:null;}
+  if(/^\d{1,2}$/.test(c.trim())){const d=+c.trim();return(d>=1&&d<=31)?d:null;}
+  return null;
+}
+function extractHolidayName(c){
+  if(!c)return null;
+  const m=c.match(/^\d{1,2}\s*[.\-。]\s*(.+)/);
+  return m?m[1].trim():null;
+}
+function guessType(name,note){
+  const n=name||'',no=note||'';
+  if(/정기휴관/.test(n))return 'off';
+  if(/빛고을시민문화팀|문화예술교육팀|기획협력팀|민주보훈과|광주지방보훈청/.test(no)||/생활안전|백스테이지|영유아|기념식|포상식/.test(n))return 's';
+  if(/\d{3,4}-\d{3,4}-\d{4}/.test(no))return 'h';
+  if(/광주오페라단|극단|㈜|모던|베베핀|인스타컴퍼니|예원기독|K클래식|뮤지컬|앙상블|오케스트라|아시아공연|국제음악|매직헌터|서커스|어린이|합창|오페라|밴드|콘서트|연주회|티오피|베누스토|창무극|브런치/.test(no+n))return 'h';
+  if(n)return 'c';
+  return null;
+}
+const isDateRow=r=>r.filter(c=>extractDay(c)!==null).length>=3;
+
+function matchesFilter(d,kw){
+  if(!kw)return true;
+  const k=kw.toLowerCase();
+  const ev=calDays[d];
+  const sd=staffData[d]||{};
+  const noteMatch=ev&&ev.note&&ev.note.toLowerCase().includes(k);
+  const nameMatch=ev&&ev.name&&ev.name.toLowerCase().includes(k);
+  const staffMatch=Object.values(sd).some(v=>v&&v.toLowerCase().includes(k));
+  return noteMatch||nameMatch||staffMatch;
+}
+
+function applyFilter(){
+  filterKeyword=document.getElementById('filterInput').value.trim();
+  const dim=new Date(calYear,calMonth,0).getDate();
+  let matchCount=0;
+  for(let d=1;d<=dim;d++){
+    const cell=document.getElementById('cell'+d);
+    if(!cell)continue;
+    if(!filterKeyword){cell.classList.remove('dimmed','highlight');}
+    else if(matchesFilter(d,filterKeyword)){cell.classList.remove('dimmed');cell.classList.add('highlight');matchCount++;}
+    else{cell.classList.add('dimmed');cell.classList.remove('highlight');}
+  }
+  const resultEl=document.getElementById('filterResult');
+  if(filterKeyword){resultEl.style.display='block';resultEl.textContent=`"${filterKeyword}" 검색 결과 — ${matchCount}일 해당`;}
+  else resultEl.style.display='none';
+}
+
+function clearFilter(){
+  document.getElementById('filterInput').value='';
+  filterKeyword='';
+  applyFilter();
+}
+
+function parsePaste(){
+  const raw=document.getElementById('pasteBox').value;
+  if(!raw.trim()){alert('붙여넣기 내용이 없어요.');return;}
+  const lines=parseTSV(raw);
+  calDays={};
+  let year=2026,month=6;
+  for(let i=0;i<Math.min(5,lines.length);i++){
+    const flat=lines[i].join(' ');
+    const m=flat.match(/(\d{4})[년\s]*(\d{1,2})[월]/);
+    if(m){year=+m[1];month=+m[2];break;}
+  }
+  calYear=year;calMonth=month;
+  const dateRowIdxs=[];
+  for(let i=0;i<lines.length;i++)if(isDateRow(lines[i]))dateRowIdxs.push(i);
+  for(const ri of dateRowIdxs){
+    const dateRow=lines[ri];
+    const dateCols=[];
+    for(let c=0;c<dateRow.length;c++){
+      const day=extractDay(dateRow[c]);
+      if(day!==null)dateCols.push({col:c,day,holName:extractHolidayName(dateRow[c])});
+    }
+    const blockLines=[];
+    for(let k=ri+1;k<lines.length&&k<=ri+8;k++){if(isDateRow(lines[k]))break;blockLines.push(lines[k]);}
+    let nameRow=null,timeRow=null,noteRow=null;
+    const unlabeled=[];
+    for(const bl of blockLines){
+      const label=bl.find(c=>c.length>0)||'';
+      if(/^공연명$/.test(label)&&!nameRow)nameRow=bl;
+      else if(/^시간$/.test(label)&&!timeRow)timeRow=bl;
+      else if(/^비고$/.test(label)&&!noteRow)noteRow=bl;
+      else unlabeled.push(bl);
+    }
+    if(!nameRow&&unlabeled[0])nameRow=unlabeled[0];
+    if(!timeRow&&unlabeled[1])timeRow=unlabeled[1];
+    if(!noteRow&&unlabeled[2])noteRow=unlabeled[2];
+    for(const {col,day,holName} of dateCols){
+      const isHoliday=!!holName;
+      const name=((nameRow&&nameRow[col])||'').trim();
+      const time=((timeRow&&timeRow[col])||'').trim();
+      const note=((noteRow&&noteRow[col])||'').trim();
+      if(!name&&!time&&!note&&!isHoliday)continue;
+      const type=guessType(name,note);
+      if(!type&&isHoliday)calDays[day]={name:'',time:'',note:'',type:'hol',holidayLabel:holName};
+      else if(type)calDays[day]={name,time,note,type,holidayLabel:isHoliday?holName:''};
+    }
+  }
+  document.getElementById('calTitle').textContent=`${year}년 ${month}월 공연장 일정`;
+  document.getElementById('calSection').style.display='block';
+  clearFilter();
+  buildCalendar();
+  document.getElementById('calSection').scrollIntoView({behavior:'smooth'});
+}
+
+function buildCalendar(){
+  const dim=new Date(calYear,calMonth,0).getDate();
+  const firstDow=new Date(calYear,calMonth-1,1).getDay();
+  const grid=document.getElementById('calGrid');
+  let html='',dayCount=0,row='<div class="day-row">';
+  for(let i=0;i<firstDow;i++){row+='<div class="cell empty"></div>';dayCount++;}
+  for(let d=1;d<=dim;d++){
+    const dow=(firstDow+d-1)%7;
+    const isSun=dow===0,isSat=dow===6;
+    const ev=calDays[d];
+    const hasStaff=staffData[d]&&Object.values(staffData[d]).some(v=>v);
+    const isOff=ev&&ev.type==='off';
+    const hasHol=ev&&ev.holidayLabel;
+    const dnCls='dn'+(isSun?' sun':isSat?' sat':'')+(isOff||hasHol?' red':'');
+    let badge='';
+    if(ev){
+      if(isOff)badge='<span class="badge boff">정기휴관일</span>';
+      else{
+        if(ev.holidayLabel)badge+=`<span class="badge bhol">${ev.holidayLabel}</span>`;
+        if(ev.name){const cls=TYPE_CLS[ev.type]||'bc';const short=ev.name.length>13?ev.name.slice(0,13)+'…':ev.name;badge+=`<span class="badge ${cls}">${short}</span>`;}
+      }
+    }
+    row+=`<div class="cell" id="cell${d}" onclick="openDay(${d})">
+      <div class="cell-top">
+        <span class="${dnCls}">${d}</span>${hasStaff?'<span class="sdot"></span>':''}
+        ${badge}
+      </div>
+    </div>`;
+    dayCount++;
+    if(dayCount%7===0){row+='</div>';html+=row;row='<div class="day-row">';}
+  }
+  if(dayCount%7!==0){while(dayCount%7!==0){row+='<div class="cell empty"></div>';dayCount++;}row+='</div>';html+=row;}
+  grid.innerHTML=html;
+  updateStats(dim);
+  if(filterKeyword)applyFilter();
+}
+
+function updateStats(dim){
+  let hall=0,self=0,off=0,free=0;
+  for(let d=1;d<=dim;d++){
+    const ev=calDays[d];
+    if(!ev){free++;continue;}
+    if(ev.type==='off')off++;
+    else if(ev.type==='s')self++;
+    else if(ev.type==='hol'&&!ev.name)free++;
+    else hall++;
+  }
+  document.getElementById('statsRow').innerHTML=`
+    <div class="stat"><div class="stat-num">${hall}</div><div class="stat-lbl">대관 행사</div></div>
+    <div class="stat"><div class="stat-num">${self}</div><div class="stat-lbl">자체 행사</div></div>
+    <div class="stat"><div class="stat-num">${off}</div><div class="stat-lbl">휴관일</div></div>
+    <div class="stat"><div class="stat-num">${free}</div><div class="stat-lbl">가용일</div></div>
+  `;
+}
+
+function openDay(d){
+  selectedDay=d;
+  const ev=calDays[d];
+  const panel=document.getElementById('detailPanel');
+  panel.classList.add('show');
+  const dow=DAYS_KR[new Date(calYear,calMonth-1,d).getDay()];
+  document.getElementById('panelTitle').textContent=`${calMonth}월 ${d}일 (${dow})${ev&&ev.holidayLabel?' — '+ev.holidayLabel:''}`;
+  let badges='';
+  if(!ev)badges='<span class="info-tag" style="background:#f0f0f0;color:#888;">일정 없음</span>';
+  else if(ev.type==='off')badges='<span class="info-tag" style="background:#F1EFE8;color:#5F5E5A;">정기휴관일</span>';
+  else{
+    if(ev.holidayLabel)badges+=`<span class="info-tag" style="background:#FEF3CD;color:#7d6008;">${ev.holidayLabel}</span>`;
+    const color=TYPE_DOT[ev.type]||'#888';
+    badges+=`<span class="info-tag" style="background:${color}22;color:${color};">${TYPE_MAP[ev.type]}</span>`;
+  }
+  document.getElementById('panelBadges').innerHTML=badges;
+  const nameEl=document.getElementById('panelName');
+  if(ev&&ev.name&&ev.type!=='off'){nameEl.textContent=ev.name;nameEl.style.display='block';}
+  else{nameEl.textContent='';nameEl.style.display='none';}
+  document.getElementById('panelTime').textContent=ev&&ev.time?'시간: '+ev.time:'';
+  document.getElementById('panelNote').textContent=ev&&ev.note?'담당: '+ev.note:'';
+  const sd=staffData[d]||{};
+  document.getElementById('s-audio').value=sd.audio||'';
+  document.getElementById('s-light').value=sd.light||'';
+  document.getElementById('s-stage').value=sd.stage||'';
+  document.getElementById('s-admin').value=sd.admin||'';
+  document.getElementById('s-memo').value=sd.memo||'';
+  panel.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+
+function saveStaff(){
+  if(!selectedDay)return;
+  staffData[selectedDay]={
+    audio:document.getElementById('s-audio').value,
+    light:document.getElementById('s-light').value,
+    stage:document.getElementById('s-stage').value,
+    admin:document.getElementById('s-admin').value,
+    memo:document.getElementById('s-memo').value,
+  };
+  // 로컬스토리지 저장
+  try{localStorage.setItem('staffData_'+calYear+'_'+calMonth,JSON.stringify(staffData));}catch(e){}
+  buildCalendar();
+  openDay(selectedDay);
+  const btn=document.getElementById('saveBtn');
+  btn.textContent='저장 완료!';
+  setTimeout(()=>{btn.textContent='저장';},1200);
+}
+
+function closePanel(){
+  document.getElementById('detailPanel').classList.remove('show');
+  selectedDay=null;
+}
+</script>
+</body>
+</html>
